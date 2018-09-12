@@ -1,0 +1,531 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title> Bienvenue sur notre site </title>
+<link href='/stylesheets/style.css' rel='stylesheet'>
+  <link href="/stylesheets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <main id="app">
+
+    <section v-if="currentPage2 === 'non_connecte'" id="non_connecte">
+    <header>
+
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <ul>
+              <li> <a> Evenements </a>
+                <ul>
+                  <li v-on:click = "currentPage = 'mariage'"> <a> Mariage </a></li>
+                  <li v-on:click = "currentPage = 'anniversaire'"> <a> Anniversaire </a></li>
+                  <li v-on:click = "currentPage = 'entreprise'"> <a> Seminaire d'entreprise </a></li>
+
+                </ul>
+
+              </li>
+
+              <li v-on:click = "currentPage = 'connexion'"> <a > Connexion </a></li>
+              <li v-on:click = "currentPage = 'nous contacter'"> <a> Nous contacter </a></li>
+              <!--<li v-on:click = "currentPage = 'panier'"> <a > Panier </a></li>-->
+
+
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </header>
+
+
+
+<!--Connexion-->
+
+    <section v-if="currentPage === 'connexion'" id="connexion">
+
+      <div class="container">
+
+        <form class= "formulaireconnexion" method ='post' >
+          <div class="form-group" >
+            <label for="exampleInputEmail1">Email address</label>
+            <input v-model="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required="required">
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword">Mot de passe</label>
+            <input v-model="password" type="password" class="form-control"  placeholder="Entrer mot de passe" required="required" >
+          </div>
+          <a href="#" v-on:click="verifPassword()" class="btn btn-primary">connexion</a>
+          <a href="#" v-on:click="currentPage ='inscription'" class="btn btn-primary">inscription</a>
+
+          <div id="incorrect-pwd">
+
+          </div>
+        </form>
+      </div>
+
+    </section>
+<!--Inscription-->
+    <section v-else-if="currentPage === 'inscription'" id="inscription">
+      <div class="container">
+        <form class="formulaireinscription" method ='post' >
+          <div class="form-group" >
+            <label for="exampleInputEmail2">Email address</label>
+            <input v-model="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" required="required" placeholder="Enter email" >
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword">Mot de passe</label>
+            <input v-model="password" type="password" class="form-control"  placeholder="Entrer mot de passe" required="required"  pattern="[a-zA-Z]+$">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword">retaper le mot de passe</label>
+          <input v-model="password2" type="password" class="form-control"  placeholder="Entrer mot de passe" required="required"  pattern="[a-zA-Z]+$">
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputbirthday">Date de naissance</label>
+            <input v-model="date" type="date" name="datenaiss" id="date" required="required" class="form-control">
+          </div>
+          <div v-if="password===password2 ">
+            <a href="#" v-on:click="f_inscription()" class="btn btn-primary">inscription</a>
+          </div>
+
+          <a href="#" v-on:click="currentPage = 'connexion'" class="btn btn-primary">connexion</a>
+
+          <div id="incorrect-inscri">
+
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+
+
+
+    <section v-else-if="currentPage === 'contacter'" id="contacter">
+      <h1>Ceci est la page pour nous contacter</h1>
+      <p>Ceci est un petit texte pour accueillir nos visiteurs</p>
+    </section>
+
+    <!--<section v-else-if="currentPage === 'panier'" id="panier">
+      <h1> Commander le contenu de votre panier </h1>
+      <div v-for="produit in panier" v-if="produit.stock >= 1">
+
+        <table>
+
+          <tr>
+            <td> <strong>{{ produit.name }}</strong></td>
+            <td><p> Sous-total : {{ produit.soustotal }} €</p></td>
+            <td><button  @click="supprimer(index)"><i></i>Supprimer</button></td>
+
+          </tr>
+        </table>
+
+        <div>
+          <center><strong>TOTAL : {{ totalPanier }} €</strong></center>
+          <br> <br>
+        </div>
+
+        <center><input type="button" value="Payer" onclick="payer()"></center>
+        <br><br>
+      </section>-->
+
+      <section v-else-if="currentPage === 'evenements'" id="evenements">
+        <h1>Nos salles pour vos événements </h1>
+      </section>
+
+      <section v-else-if="currentPage === 'mariage'" id="mariage">
+        <h1>Nos salles pour votre mariage </h1>
+        <div class="container">
+        <div v-for="(produit, index) of produit" v-if="produit.type === 'mariage'"class="row">
+
+        <div class="card col-md-4">
+                    <img class="card-img-top" v-bind:src=produit.src alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">nom de la salle: {{ produit.name }}</h5>
+                        <p class="card-text">prix: {{ produit.prix }}</p>
+                        <a  class="btn btn-info" v-on:click="currentPage = 'connexion'" role="button"> Ajouter au Panier </a>
+                    </div>
+            </div>
+          </div>
+
+          </div>
+
+      </section>
+
+      <section v-else-if="currentPage === 'anniversaire'" id="anniversaire">
+        <h1>Nos salles pour votre anniversaire </h1>
+        <div class="container">
+        <div v-for="(produit, index) of produit" v-if="produit.type === 'anniversaire'"class="row">
+
+        <div class="card col-md-4">
+                    <img class="card-img-top" v-bind:src=produit.src alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">nom de la salle: {{ produit.name }}</h5>
+                        <p class="card-text">prix: {{ produit.prix }}</p>
+                        <a  class="btn btn-info" v-on:click="currentPage = 'connexion'" role="button"> Ajouter au Panier </a>
+                    </div>
+            </div>
+          </div>
+          </div>
+      </section>
+
+
+
+
+      <section v-else-if="currentPage === 'entreprise'" id="conference">
+        <p>Nos salles pour vos séminaires d'entreprise </p>
+        <div class="container">
+        <div v-for="(produit, index) of produit" v-if="produit.type === 'conference'"class="row">
+
+        <div class="card col-md-4">
+                    <img class="card-img-top" v-bind:src=produit.src alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">nom de la salle: {{ produit.name }}</h5>
+                        <p class="card-text">prix: {{ produit.prix }}</p>
+                        <a  class="btn btn-info" v-on:click="currentPage = 'connexion'" role="button"> Ajouter au Panier </a>
+                    </div>
+            </div>
+          </div>
+
+          </div>
+      </section>
+  </section>
+
+  <section v-else-if="currentPage2 === 'connecte'" id="connecte">
+    <header>
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <ul>
+              <li> <a> Evenements </a>
+                <ul>
+                  <li v-on:click = "currentPage3 = 'mariage'"> <a> Mariage </a></li>
+                  <li v-on:click = "currentPage3 = 'anniversaire'"> <a> Anniversaire </a></li>
+                  <li v-on:click = "currentPage3 = 'entreprise'"> <a> Seminaire d'entreprise </a></li>
+
+                </ul>
+
+              </li>
+              <li v-on:click = "currentPage3 = 'panier'"> <a > Panier </a></li>
+              <li v-on:click = "currentPage3 = 'nous contacter'"> <a> Nous contacter </a></li>
+              <li v-on:click = "deconnection()"> <a> Quitter </a></li>
+
+
+
+
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </header>
+
+
+  <!--  <section v-else-if="currentPage3 === 'contacter'" id="contacter">
+      <h1>Ceci est la page pour nous contacter</h1>
+      <p>Ceci est un petit texte pour accueillir nos visiteurs</p>
+    </section>
+
+    <section v-else-if="currentPage3 === 'panier'" id="panier">
+      <h1> Commander le contenu de votre panier </h1>
+      <div v-for="produit in panier" v-if="produit.stock >= 1">
+
+        <table>
+
+          <tr>
+            <td> <strong>{{ produit.name }}</strong></td>
+            <td><p> Sous-total : {{ produit.soustotal }} €</p></td>
+            <td><button  @click="supprimer(index)"><i></i>Supprimer</button></td>
+
+          </tr>
+        </table>
+
+        <div>
+          <center><strong>TOTAL : {{ totalPanier }} €</strong></center>
+          <br> <br>
+        </div>
+
+        <center><input type="button" value="Payer" onclick="payer()"></center>
+        <br><br>
+      </section>
+
+      <section v-else-if="currentPage3 === 'evenements'" id="evenements">
+        <h1>Nos salles pour vos événements </h1>
+      </section>
+
+      <section v-else-if="currentPage3 === 'mariage'" id="mariage">
+        <h1>Nos salles pour votre mariage </h1>
+        <div class="container">
+        <div v-for="(produit, index) of produit" v-if="produit.type === 'mariage'"class="row">
+
+        <div class="card col-md-4">
+                    <img class="card-img-top" v-bind:src=produit.src alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">nom de la salle: {{ produit.name }}</h5>
+                        <p class="card-text">prix: {{ produit.prix }}</p>
+                        <a  class="btn btn-info" v-on:click="currentPage = 'connexion'" role="button"> Ajouter au Panier </a>
+                    </div>
+            </div>
+          </div>
+
+          </div>
+
+      </section>
+
+      <section v-else-if="currentPage3 === 'anniversaire'" id="anniversaire">
+        <h1>Nos salles pour votre anniversaire </h1>
+        <div class="container">
+        <div v-for="(produit, index) of produit" v-if="produit.type === 'anniversaire'"class="row">
+
+        <div class="card col-md-4">
+                    <img class="card-img-top" v-bind:src=produit.src alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">nom de la salle: {{ produit.name }}</h5>
+                        <p class="card-text">prix: {{ produit.prix }}</p>
+                        <a  class="btn btn-info" v-on:click="currentPage = 'connexion'" role="button"> Ajouter au Panier </a>
+                    </div>
+            </div>
+          </div>
+          </div>
+      </section>
+
+
+
+
+      <section v-else-if="currentPage3 === 'entreprise'" id="conference">
+        <p>Nos salles pour vos séminaires d'entreprise </p>
+        <div class="container">
+        <div v-for="(produit, index) of produit" v-if="produit.type === 'conference'"class="row">
+
+        <div class="card col-md-4">
+                    <img class="card-img-top" v-bind:src=produit.src alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">nom de la salle: {{ produit.name }}</h5>
+                        <p class="card-text">prix: {{ produit.prix }}</p>
+                        <a  class="btn btn-info" v-on:click="currentPage = 'connexion'" role="button"> Ajouter au Panier </a>
+                    </div>
+            </div>
+          </div>
+
+          </div>
+      </section>-->
+
+
+
+
+    </section>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.2/axios.js"></script>
+
+    <script>
+    Vue.prototype.$http = axios
+    const app = new Vue({
+      el: '#app',
+      data: {
+        currentPage: 'connexion',
+        currentPage2: 'non_connecte',
+        currentPage3: 'mariage',
+
+        produit: [{
+          name:'salle de reception anniversaire',
+          prix: 300,
+          src: '/stylesheets/anniv1.jpg',
+          stock:10,
+          type: 'anniversaire'
+        },{
+          name:'salle de reception anniversaire2',
+          prix: 300,
+          src: '/stylesheets/anniv2.jpg',
+          stock:10,
+          type: 'anniversaire'
+        },{
+          name:'salle de reception anniversaire 3',
+          prix: 300,
+          src: '/stylesheets/anniv3.jpg',
+          stock:10,
+          type: 'anniversaire'
+        },{
+          name:'salle de reception conference',
+          prix: 300,
+          src: '/stylesheets/conf1.jpg',
+          stock:10,
+          type: 'conference'
+        },{
+          name:'salle de reception conference 2',
+          prix: 300,
+          src: '/stylesheets/conf2.jpg',
+          stock:10,
+          type: 'conference'
+        },{
+          name:'salle de reception conference 3',
+          prix: 300,
+          src: '/stylesheets/conf3.jpg',
+          stock:10,
+          type: 'conference'
+        },
+        {
+          name:'salle de reception mariage',
+          prix: 300,
+          src: '/stylesheets/image.jpg',
+          stock:10,
+          type: 'mariage'
+        },{
+          name:'salle de reception mariage 2',
+          prix: 300,
+          src: '/stylesheets/mariage2.jpg',
+          stock:10,
+          type: 'mariage'
+        },{
+          name:'salle de reception mariage 3',
+          prix: 300,
+          src: '/stylesheets/mariage3.jpg',
+          stock:10,
+          type: 'mariage'
+        }
+
+
+      ],
+        myList: [],
+        email: '',
+        password:'',
+        password2:'',
+        date:'',
+
+        panier: [{
+          name:'salle de reception ',
+          prix: 220,
+          soustotal:0,
+          stock:0,
+
+        }],
+      },
+      created () {
+        this.$http.get('/user')
+        .then((user) => {
+          console.log('affichage de mon user', user)
+          this.myList = user.data
+        })
+        .catch(function (err) {
+          console.log('error', err)
+        })
+      },
+      methods: {
+        /*ajouterPanier: function (produit, index) {
+          console.log(index);
+          var totalPanier;
+          console.log(totalPanier);
+          this.totalPanier = 0;
+          this.panier[index].stock = this.panier[index].stock + 1,
+          produit.stock = produit.stock - 1,
+          this.panier[index].soustotal = produit.prix * this.panier[index].stock
+
+          for (var i = 0; i < index+1 ; i++) {
+            console.log(i);
+
+            this.totalPanier = this.totalPanier + this.panier[index].soustotal;
+            console.log(totalPanier);
+          }
+
+        },
+        supprimer: function(index) {
+          this.panier.splice(index, 1,0);
+
+        },*/
+        f_inscription: function(){
+          console.log("ok");
+          console.log(this.email);
+          console.log(this.password);
+          console.log(this.date);
+          if (this.email != '' && this.password !='' && this.date != '') {
+
+            this.$http.get('/user')
+            .then((user) => {
+              var exist;
+              exist = 0;
+              for (var i = 0; i < user.data.length; i++) {
+                if(this.email == user.data[i].email){
+                  exist = 1;
+
+                }
+              }
+              if (exist != 1) {
+                this.$http.post('/user', {
+                  email: this.email,
+                  password: this.password,
+                  date: this.date
+                })
+                .then(() => {
+                  this.myList.push({
+                    email: this.email,
+                    password: this.password,
+                    date: this.date
+                  })
+                })
+                this.currentPage='connexion';
+              }else {
+                document.getElementById('incorrect-inscri').innerHTML = "<p>Email deja utilisé</p>";
+              }
+            })
+
+          }else{
+            document.getElementById('incorrect-inscri').innerHTML = "<p>Veuiller remplir tous les champs</p>";
+          }
+
+        },
+        verifPassword: function(){
+          //console.log(this.myList);
+
+
+
+          this.$http.get('/user')
+          .then((user) => {
+
+            console.log(user.data.length)
+            console.log(user.data[0].password)
+
+            for (var i = 0; i < user.data.length; i++) {
+
+              if (this.email==user.data[i].email && this.password==user.data[i].password) {
+                console.log('connecte!!!!');
+                this.currentPage2='connecte';
+
+
+
+              }else {
+                console.log('mauvais password');
+
+                document.getElementById('incorrect-pwd').innerHTML = "<p>email ou password invalide</p>";
+              }
+            }
+
+          })
+          .catch(function (err) {
+            console.log('error', err)
+          })
+
+        },
+        /*verifPassword: function(){
+          this.currentPage2 = 'non_connecte'
+        }*/
+
+
+      }
+
+
+    })
+    </script>
+
+  </body>
+
+
+
+  </html>
