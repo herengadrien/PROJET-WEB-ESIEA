@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
-const panier= [{
+const panier= [/*{
   nomProduit:'',
   prixProduit:'',
   dateReservation:'',
+  partieJour:'',
   idUser:''
-}]
+}*/]
 
 
 const user = [{
@@ -38,10 +39,18 @@ router.post('/panier', (req, res) => {
   nomProduit: req.body.nomProduit,
   prixProduit: req.body.prixProduit,
   dateReservation: req.body.dateReservation,
+  partieJour: req.body.partieJour,
   idUser: req.body.idUser
 
   })
   res.send('OKok')
+})
+
+router.delete('/panier', (req, res) => {
+panier.splice(req.body.index,1)
+  //panier.splice(0,panier.length)
+  res.send('OKok')
+  //delete panier;
 })
 
 //usless
